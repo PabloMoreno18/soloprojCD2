@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hype Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}" >
+</head>
+<body>
+<div class="container-fluid">
+<div class="bg-wrap">
+<nav class ="navbar navbar-expand-md navbar-light bg-light sticky-top">
+    <a class ="navbar-brand" href ="#">Game Hype</a>
+    <button class ="navbar-toggler" type ="button" data-toggle ="collapse" data-target ="#navbarResponsive">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class ="collapse navbar-collapse" id="#navbarResponsive">
+        <ul class ="navbar-nav ml-auto">
+            <li class ="nav-item">
+                <a class ="nav-link" href="/dashboard">Home</a>
+            </li>
+            <li class ="nav-item">
+                <a class ="nav-link" href="/new">Post</a>
+            </li>
+            <li class ="nav-item">
+                <a class ="nav-link" href="#support">Support</a>
+            </li>
+            <li class ="nav-item">
+                <a class ="nav-link" href="/logout">Sign Out</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+    <br>
+    <br>
+    <h1>🕹️Welcome to the Hype, {{request.session.name}}!🕹️</h1>
+    <h2>The Wall</h2>
+    {% for game in games reversed %}
+    <div class="col-lg-6">
+        
+        <p>Title: {{game.title}}</p>
+        <p>Description: {{game.description}}</p>
+        <p>Rating(numeric): {{game.rating}}</p>
+        <p>Platform: {{game.platform}}</p>
+        <p>{{game.created_by.first_name}} {{game.created_by.last_name}}</p>
+        <ul>
+            {% if game.created_by.id != request.session.userID %}
+            {% else %}
+            <li><a href="show_one/{{game.id}}">Edit</a></li>
+            <li><a href="show_one/{{game.id}}/delete">Delete</a></li>
+            {% endif %}
+        </ul>
+        <form action="/add_comment/{{game.id}}" method=POST>
+            {% csrf_token %}
+            Comment: <input type="text" name='comment'>
+            <input type="submit" value='Submit'>
+        </form>
+        <br>
+        {% for comment in game.post_comments.all %}
+            <p>{{comment.comment}}</p>
+            <p>posted by: {{comment.creator.first_name}} {{comment.creator.last_name}}<a href="/delete/{{comment.id}}">  Delete</a></p>
+        {% endfor %}
+        
+    </div>
+    {% endfor %}
+</div>
+<footer>
+    <div class="container-fluid padding">
+        <div class="row text-center">
+        <div class="col-md-4">
+            <img src="https://cdn7.bigcommerce.com/s-sq9zkarfah/products/44501/images/156602/1up-Decal-Sticker__74765.1510991447.500.750.jpg?c=2" width="80px" height="80px">
+        <hr class="light">
+        <p>555-555-5555</p>
+        <p>noob@gmail.com</p>
+        <p>123 Street Dr Calexico, Ca</p>
+        </div>
+        <div class="col-md-4">
+            <hr class="light">
+            <h5>Contact US</h5>
+            <hr class="light">
+            <p><a href="">Chat</a></p>
+            <p><a href="">Phone</a></p>
+            <p><a href="">Email</a></p>
+        </div>
+        <div class="col-12">
+            <hr class="light">
+            <h5>Designed by Pablo M</h5>
+        </div>
+    </div>
+    </div>
+</footer>
+</div>
+</body>
+</html>
